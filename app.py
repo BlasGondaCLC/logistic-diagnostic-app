@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 st.set_page_config(
     page_title="Diagnóstico Logístico → Power BI",
-    page_icon="📦",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -62,174 +62,231 @@ st.set_page_config(
 st.markdown("""
 <style>
     /* ── Fuente global ── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     html, body, [class*="css"] {
         font-family: 'Inter', 'Segoe UI', sans-serif;
     }
 
-    /* ── Header de paso (barra superior de cada sección) ── */
+    /* ── Fondo principal ── */
+    .main .block-container { padding-top: 2rem; }
+
+    /* ── Header de paso ── */
     .step-header {
-        background: linear-gradient(90deg, #111920 0%, #1a2c3d 100%);
-        border-left: 4px solid #00C8D7;
+        border-left: 3px solid #00C8D7;
         color: #ffffff;
-        padding: 14px 22px;
-        border-radius: 0 8px 8px 0;
-        margin-bottom: 20px;
-        font-size: 1.05rem;
+        padding: 10px 20px;
+        margin-bottom: 24px;
+        font-size: 0.78rem;
         font-weight: 700;
-        letter-spacing: 0.3px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: transparent;
     }
 
-    /* ── Título principal ── */
-    h1 { color: #00C8D7 !important; font-weight: 800 !important; }
-    h2, h3 { color: #e8edf2 !important; }
+    /* ── Tipografía ── */
+    h1 { color: #00C8D7 !important; font-weight: 800 !important; letter-spacing: -0.5px; }
+    h2, h3 { color: #e8edf2 !important; font-weight: 600 !important; }
+    h3 { font-size: 0.95rem !important; letter-spacing: 1px; text-transform: uppercase; color: #8fa3b8 !important; }
 
-    /* ── Tarjeta de métrica CLC ── */
+    /* ── Métricas ── */
     .clc-metric {
-        background: #111920;
-        border: 1px solid #00C8D7;
-        border-radius: 10px;
-        padding: 18px 14px;
+        background: #0d1624;
+        border-top: 2px solid #00C8D7;
+        padding: 16px 12px;
         text-align: center;
-        margin: 4px 0;
     }
     .clc-metric .num {
-        font-size: 2rem;
+        font-size: 2.2rem;
         font-weight: 800;
         color: #00C8D7;
         line-height: 1;
     }
     .clc-metric .lbl {
-        font-size: 0.78rem;
+        font-size: 0.7rem;
         color: #8fa3b8;
-        margin-top: 4px;
+        margin-top: 6px;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 1.2px;
     }
 
-    /* ── Badge de estado de análisis ── */
-    .badge-ok    { background:#003d3d; color:#00C8D7; border:1px solid #00C8D7;
-                   padding:2px 10px; border-radius:20px; font-size:0.8rem; font-weight:600; }
-    .badge-warn  { background:#3d2d00; color:#f5a623; border:1px solid #f5a623;
-                   padding:2px 10px; border-radius:20px; font-size:0.8rem; font-weight:600; }
-    .badge-fail  { background:#3d0012; color:#ff4d6d; border:1px solid #ff4d6d;
-                   padding:2px 10px; border-radius:20px; font-size:0.8rem; font-weight:600; }
+    /* ── Badges de estado ── */
+    .badge-ok   { color: #00C8D7; font-size: 0.72rem; font-weight: 700;
+                  letter-spacing: 1px; text-transform: uppercase; }
+    .badge-warn { color: #e6a817; font-size: 0.72rem; font-weight: 700;
+                  letter-spacing: 1px; text-transform: uppercase; }
+    .badge-fail { color: #c94b4b; font-size: 0.72rem; font-weight: 700;
+                  letter-spacing: 1px; text-transform: uppercase; }
 
-    /* ── Expander más limpio ── */
+    /* ── Expanders ── */
     div[data-testid="stExpander"] {
-        border: 1px solid #1e3045 !important;
-        border-radius: 8px !important;
-        background: #111920 !important;
+        border: 1px solid #1a2535 !important;
+        border-radius: 0 !important;
+        background: #0d1624 !important;
     }
     div[data-testid="stExpander"] summary {
-        font-weight: 600;
-        color: #e8edf2;
+        font-weight: 600; font-size: 0.88rem;
+        color: #cdd8e3; letter-spacing: 0.3px;
     }
 
     /* ── Tabla de datos ── */
-    div[data-testid="stDataFrame"] {
-        border: 1px solid #1e3045;
-        border-radius: 8px;
-    }
+    div[data-testid="stDataFrame"] { border: 1px solid #1a2535; }
 
-    /* ── Botón primario — cyan CLC ── */
+    /* ── Botón primario ── */
     div[data-testid="stButton"] > button[kind="primary"] {
         background: #00C8D7 !important;
-        color: #0a1520 !important;
+        color: #060d14 !important;
         border: none !important;
         font-weight: 700 !important;
-        letter-spacing: 0.3px;
-        border-radius: 6px !important;
+        font-size: 0.82rem !important;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        border-radius: 2px !important;
+        padding: 0.6rem 1.4rem !important;
     }
     div[data-testid="stButton"] > button[kind="primary"]:hover {
-        background: #00e0f0 !important;
-        box-shadow: 0 0 12px #00C8D740;
+        background: #00dce9 !important;
+    }
+    div[data-testid="stButton"] > button[kind="secondary"] {
+        border: 1px solid #1a2535 !important;
+        color: #8fa3b8 !important;
+        border-radius: 2px !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
     }
 
-    /* ── Separador con brillo cyan ── */
-    hr { border-color: #1e3045 !important; }
+    /* ── Separadores ── */
+    hr { border-color: #1a2535 !important; margin: 1.5rem 0 !important; }
 
     /* ── Sidebar ── */
     section[data-testid="stSidebar"] {
-        background: #080e15 !important;
-        border-right: 1px solid #1e3045;
+        background: #060d14 !important;
+        border-right: 1px solid #1a2535;
     }
-    section[data-testid="stSidebar"] .stMarkdown p {
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span {
         color: #8fa3b8;
-        font-size: 0.85rem;
+        font-size: 0.83rem;
+    }
+    section[data-testid="stSidebar"] label {
+        font-size: 0.78rem !important;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #5a7a96 !important;
     }
 
-    /* ── Bloque de insight Claude ── */
+    /* ── Insight Claude ── */
     .clc-insight {
-        background: #0d1e2d;
-        border-left: 3px solid #00C8D7;
+        background: #0a1722;
+        border-left: 2px solid #00C8D7;
         padding: 12px 16px;
-        border-radius: 0 8px 8px 0;
-        color: #cdd8e3;
-        font-size: 0.92rem;
-        line-height: 1.65;
-        margin-top: 10px;
+        color: #adc0d0;
+        font-size: 0.88rem;
+        line-height: 1.7;
+        margin-top: 8px;
     }
 
-    /* ── Box de resumen ejecutivo ── */
+    /* ── Resumen ejecutivo ── */
     .clc-summary {
-        background: #0d1e2d;
-        border: 1px solid #00C8D750;
-        border-radius: 10px;
+        background: #0a1722;
+        border-top: 2px solid #00C8D7;
         padding: 20px 24px;
         color: #cdd8e3;
-        line-height: 1.7;
-        font-size: 0.97rem;
+        line-height: 1.8;
+        font-size: 0.94rem;
     }
     .clc-summary strong { color: #00C8D7; }
 
-    /* ── Progreso de pasos en sidebar ── */
-    .step-done    { color: #00C8D7; font-weight: 600; }
-    .step-active  { color: #ffffff; font-weight: 800; font-size: 1.02rem; }
-    .step-pending { color: #3d5268; }
+    /* ── Pasos sidebar ── */
+    .step-done    { color: #00C8D7; font-size: 0.8rem; letter-spacing: 0.8px; }
+    .step-active  { color: #ffffff; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.8px; }
+    .step-pending { color: #2d4055; font-size: 0.8rem; letter-spacing: 0.8px; }
 
     /* ── File uploader ── */
     div[data-testid="stFileUploader"] {
-        border: 2px dashed #1e3045 !important;
-        border-radius: 10px !important;
-        background: #0d1624 !important;
-        padding: 10px;
+        border: 1px dashed #1a2535 !important;
+        border-radius: 0 !important;
+        background: #0a1722 !important;
+        padding: 12px;
     }
-    div[data-testid="stFileUploader"]:hover {
-        border-color: #00C8D7 !important;
-    }
+    div[data-testid="stFileUploader"]:hover { border-color: #00C8D7 !important; }
 
     /* ── Tabs ── */
     div[data-baseweb="tab-list"] {
-        background: #111920 !important;
-        border-radius: 8px;
-        padding: 4px;
+        background: #0d1624 !important;
+        border-radius: 0; gap: 2px;
     }
     button[data-baseweb="tab"][aria-selected="true"] {
         background: #00C8D7 !important;
-        color: #0a1520 !important;
+        color: #060d14 !important;
         font-weight: 700 !important;
-        border-radius: 6px !important;
+        border-radius: 0 !important;
+        font-size: 0.78rem !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    button[data-baseweb="tab"] {
+        font-size: 0.78rem !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #8fa3b8 !important;
     }
 
-    /* ── Text area del prompt ── */
+    /* ── Prompt textarea ── */
     div[data-testid="stTextArea"] textarea {
         font-family: 'Consolas', 'Courier New', monospace !important;
-        font-size: 0.82rem !important;
-        background: #080e15 !important;
-        color: #b8d0e8 !important;
-        border: 1px solid #1e3045 !important;
-        border-radius: 8px !important;
+        font-size: 0.8rem !important;
+        background: #060d14 !important;
+        color: #8bbdd9 !important;
+        border: 1px solid #1a2535 !important;
+        border-radius: 0 !important;
     }
 
-    /* ── Download button ── */
+    /* ── Download buttons ── */
     div[data-testid="stDownloadButton"] > button {
+        border: 1px solid #1a2535 !important;
+        color: #8fa3b8 !important;
+        border-radius: 2px !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    div[data-testid="stDownloadButton"] > button[kind="primary"] {
         border: 1px solid #00C8D7 !important;
         color: #00C8D7 !important;
-        border-radius: 6px !important;
-        font-weight: 600 !important;
     }
     div[data-testid="stDownloadButton"] > button:hover {
-        background: #00C8D720 !important;
+        background: #00C8D710 !important;
+        border-color: #00C8D7 !important;
+        color: #00C8D7 !important;
+    }
+
+    /* ── Inputs ── */
+    div[data-testid="stTextInput"] input,
+    div[data-testid="stSelectbox"] div {
+        border-radius: 2px !important;
+        border-color: #1a2535 !important;
+        background: #0a1722 !important;
+    }
+
+    /* ── Toggle ── */
+    label[data-testid="stWidgetLabel"] p {
+        font-size: 0.8rem !important;
+        color: #8fa3b8 !important;
+    }
+
+    /* ── st.info / st.warning / st.success ── */
+    div[data-testid="stAlert"] {
+        border-radius: 0 !important;
+        border-left-width: 3px !important;
+    }
+
+    /* ── Captions ── */
+    div[data-testid="stCaptionContainer"] p {
+        font-size: 0.72rem !important;
+        letter-spacing: 0.5px;
+        color: #3d5268 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -291,27 +348,45 @@ init_session_state()
 
 def render_sidebar():
     with st.sidebar:
-        st.image("https://img.icons8.com/fluency/96/warehouse.png", width=60)
-        st.title("Diagnóstico Logístico")
-        st.caption("Asistente previo a Power BI MCP")
+        st.markdown("""
+<div style="padding:24px 0 8px 0;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 115" width="200">
+    <defs>
+      <clipPath id="ccut"><rect x="0" y="0" width="68" height="90"/></clipPath>
+    </defs>
+    <!-- CLC letras -->
+    <text x="4" y="82" font-family="Arial Black,Impact,sans-serif" font-weight="900"
+          font-size="82" fill="#ffffff" letter-spacing="-4" clip-path="url(#ccut)">C</text>
+    <!-- diagonal slash sobre la C -->
+    <line x1="6" y1="8" x2="56" y2="84" stroke="#00C8D7" stroke-width="3.5"/>
+    <text x="58" y="82" font-family="Arial Black,Impact,sans-serif" font-weight="900"
+          font-size="82" fill="#ffffff" letter-spacing="-4">LC</text>
+    <!-- línea horizontal -->
+    <line x1="4" y1="92" x2="256" y2="92" stroke="#ffffff" stroke-width="1.2" opacity="0.5"/>
+    <!-- tagline -->
+    <text x="4" y="106" font-family="Arial,sans-serif" font-weight="400"
+          font-size="9.5" fill="#8fa3b8" letter-spacing="1.8">EXCELENCIA EN ASESORÍA Y CONSTRUCCIÓN LOGÍSTICA</text>
+  </svg>
+</div>
+""", unsafe_allow_html=True)
 
         st.divider()
 
         # Progreso
-        steps = ["① Carga", "② Revisión", "③ Diagnóstico", "④ Prompt MCP"]
+        steps = ["01 — Carga", "02 — Revisión", "03 — Diagnóstico", "04 — Prompt MCP"]
         current = st.session_state.step - 1
         for i, step_label in enumerate(steps):
             if i < current:
-                st.markdown(f"✅ {step_label}")
+                st.markdown(f'<p class="step-done">— {step_label}</p>', unsafe_allow_html=True)
             elif i == current:
-                st.markdown(f"**▶ {step_label}**")
+                st.markdown(f'<p class="step-active">→ {step_label}</p>', unsafe_allow_html=True)
             else:
-                st.markdown(f"⬜ {step_label}")
+                st.markdown(f'<p class="step-pending">· {step_label}</p>', unsafe_allow_html=True)
 
         st.divider()
 
         # Configuración
-        st.subheader("⚙️ Configuración")
+        st.markdown("**CONFIGURACIÓN**")
 
         st.session_state.project_name = st.text_input(
             "Nombre del proyecto / cliente",
@@ -323,7 +398,7 @@ def render_sidebar():
         api_key_auto = _resolve_api_key()
         if api_key_auto:
             st.session_state.api_key = api_key_auto
-            st.success("✅ API key configurada")
+            st.success("API key configurada")
         else:
             entered = st.text_input(
                 "Anthropic API Key",
@@ -365,11 +440,11 @@ def render_sidebar():
         )
 
         if not llm_enabled:
-            st.caption("⚠️ Ingresá una API key para activar los análisis con Claude.")
+            st.caption("Ingresá una API key para activar los análisis con Claude.")
 
         st.divider()
 
-        st.subheader("🧭 Estrategia del prompt MCP")
+        st.markdown("**ESTRATEGIA DEL PROMPT**")
         st.session_state.report_mode = st.selectbox(
             "Nivel de detalle",
             options=REPORT_GENERATION_MODES,
@@ -398,7 +473,7 @@ def render_sidebar():
         st.divider()
 
         # Reset
-        if st.button("🔄 Nuevo análisis", use_container_width=True, type="secondary"):
+        if st.button("Nuevo análisis", use_container_width=True, type="secondary"):
             for key in ["loaded_tables", "load_errors", "profiles", "diagnostic_report",
                         "generated_prompt"]:
                 st.session_state[key] = [] if isinstance(st.session_state[key], list) else None if key != "generated_prompt" else ""
@@ -406,7 +481,7 @@ def render_sidebar():
             st.rerun()
 
         st.divider()
-        st.caption("v1.0.0 · Diagnóstico Logístico → Power BI MCP")
+        st.caption("v1.0 · CLC — Diagnóstico Logístico")
 
 
 # ---------------------------------------------------------------------------
@@ -414,7 +489,7 @@ def render_sidebar():
 # ---------------------------------------------------------------------------
 
 def render_step1():
-    st.markdown('<div class="step-header">📂 Paso 1 — Carga de archivos</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-header">01 — Carga de archivos</div>', unsafe_allow_html=True)
 
     st.markdown("""
     Cargá uno o varios archivos de tu cliente. La app acepta:
@@ -431,7 +506,7 @@ def render_step1():
     )
 
     if not uploaded_files:
-        st.info("👆 Cargá al menos un archivo para comenzar.")
+        st.info("Cargá al menos un archivo para comenzar.")
         _show_format_tips()
         return
 
@@ -506,13 +581,13 @@ def _process_step1(uploaded_files):
         for err in load_errors:
             st.warning(err)
 
-    st.success(f"✅ {len(loaded_tables)} tabla(s) cargada(s) exitosamente.")
+    st.success(f"{len(loaded_tables)} tabla(s) cargada(s) exitosamente.")
     st.session_state.step = 2
     st.rerun()
 
 
 def _show_format_tips():
-    with st.expander("ℹ️ Consejos de formato"):
+    with st.expander("Consejos de formato"):
         st.markdown("""
         **Excel (.xlsx, .xls)**
         - Cada hoja del archivo se analiza por separado.
@@ -536,7 +611,7 @@ def _show_format_tips():
 # ---------------------------------------------------------------------------
 
 def render_step2():
-    st.markdown('<div class="step-header">🔍 Paso 2 — Revisión y corrección de clasificación</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-header">02 — Revisión y corrección</div>', unsafe_allow_html=True)
 
     profiles = st.session_state.profiles
     if not profiles:
@@ -623,8 +698,8 @@ def render_step2():
                     for col in detected_cols:
                         c1, c2 = st.columns(2)
                         with c1:
-                            confidence_emoji = "✅" if col.detection_confidence >= 0.7 else "⚠️"
-                            st.markdown(f"{confidence_emoji} `{col.original_name}`")
+                            conf_label = "·" if col.detection_confidence >= 0.7 else "?"
+                            st.markdown(f"{conf_label} `{col.original_name}`")
                             if col.sample_values:
                                 st.caption(f"Muestra: {', '.join(str(v) for v in col.sample_values[:3])}")
                         with c2:
@@ -645,7 +720,7 @@ def render_step2():
 
                 # Columnas sin detectar (opcional mostrarlas)
                 if unknown_cols:
-                    with st.expander(f"📋 {len(unknown_cols)} columnas sin clasificar (click para ver)"):
+                    with st.expander(f"{len(unknown_cols)} columnas sin clasificar"):
                         for col in unknown_cols[:20]:
                             c1, c2 = st.columns(2)
                             with c1:
@@ -668,7 +743,7 @@ def render_step2():
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        if st.button("⚡ Confirmar y generar análisis", type="primary", use_container_width=True):
+        if st.button("Confirmar y generar análisis", type="primary", use_container_width=True):
             with st.spinner("Ejecutando análisis de calidad y factibilidad..."):
                 _process_step2()
 
@@ -688,13 +763,13 @@ def _process_step2():
     # Paso A: Quality checks (heurístico)
     with st.status("Verificando calidad de datos...", expanded=False):
         profiles, cross_warnings = run_quality_checks(profiles, loaded_tables)
-        st.write(f"✅ Calidad verificada en {len(profiles)} tablas.")
+        st.write(f"Calidad verificada en {len(profiles)} tablas.")
 
     # Paso B: Feasibility analysis (heurístico)
     with st.status("Calculando factibilidad de análisis...", expanded=False):
         report = run_feasibility_analysis(profiles)
         report.cross_table_issues = cross_warnings
-        st.write(f"✅ {len(report.possible_analyses)} posibles, {len(report.partial_analyses)} parciales, {len(report.impossible_analyses)} no posibles.")
+        st.write(f"{len(report.possible_analyses)} posibles, {len(report.partial_analyses)} parciales, {len(report.impossible_analyses)} no posibles.")
 
     # Paso C: Enriquecimiento LLM (si hay API key y algún toggle activo)
     if api_key and any_llm:
@@ -720,7 +795,7 @@ def _process_step2():
                 )
                 st.write("✅ Análisis con Claude completado.")
             except Exception as e:
-                st.warning(f"⚠️ Enriquecimiento LLM tuvo errores: {e}. Se usarán los resultados heurísticos.")
+                st.warning(f"Enriquecimiento LLM tuvo errores: {e}. Se usarán los resultados heurísticos.")
 
     st.session_state.profiles = profiles
     st.session_state.diagnostic_report = report
@@ -743,7 +818,7 @@ def _get_prompt_options() -> dict:
 # ---------------------------------------------------------------------------
 
 def render_step3():
-    st.markdown('<div class="step-header">📊 Paso 3 — Diagnóstico completo</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-header">03 — Diagnóstico completo</div>', unsafe_allow_html=True)
 
     report = st.session_state.diagnostic_report
     if report is None:
@@ -751,7 +826,7 @@ def render_step3():
         return
 
     # --- Resumen ejecutivo ---
-    st.markdown("### 📋 Resumen ejecutivo")
+    st.markdown("### Resumen ejecutivo")
     # Detectar si el resumen fue generado por Claude o por template
     is_llm_summary = not report.general_summary.startswith("Se cargaron")
     if is_llm_summary:
@@ -772,7 +847,7 @@ def render_step3():
     with c2:
         st.metric("⚠️ Análisis parciales", len(report.partial_analyses))
     with c3:
-        st.metric("❌ No posibles", len(report.impossible_analyses))
+        st.metric("No posibles", len(report.impossible_analyses))
     with c4:
         viab = report.overall_feasibility_percentage
         st.metric("Viabilidad general", f"{viab:.0f}%")
@@ -813,7 +888,7 @@ def render_step3():
             # Insights de Claude (si están disponibles)
             llm_insights = table.__dict__.get("llm_insights", "")
             if llm_insights:
-                st.markdown("**🤖 Análisis de Claude:**")
+                st.markdown("**Análisis de Claude:**")
                 st.markdown(
                     f'<div style="background:#f0f7ff;border-left:3px solid #2d6099;'
                     f'padding:10px 14px;border-radius:4px;color:#1a1a2e;font-size:0.93rem;line-height:1.6">'
@@ -831,7 +906,7 @@ def render_step3():
 
     # Inconsistencias cross-tabla
     if report.cross_table_issues:
-        st.markdown("### ⚡ Inconsistencias entre tablas")
+        st.markdown("### Inconsistencias entre tablas")
         for issue in report.cross_table_issues:
             st.warning(issue)
 
@@ -841,9 +916,9 @@ def render_step3():
     st.markdown("### 📐 Matriz de factibilidad de análisis")
 
     tab_possible, tab_partial, tab_impossible = st.tabs([
-        f"✅ Posibles ({len(report.possible_analyses)})",
-        f"⚠️ Parciales ({len(report.partial_analyses)})",
-        f"❌ No posibles ({len(report.impossible_analyses)})",
+        f"Posibles ({len(report.possible_analyses)})",
+        f"Parciales ({len(report.partial_analyses)})",
+        f"No posibles ({len(report.impossible_analyses)})",
     ])
 
     with tab_possible:
@@ -851,7 +926,7 @@ def render_step3():
             for name in report.possible_analyses:
                 result = next((r for r in report.feasibility_matrix if r.analysis_name == name), None)
                 if result:
-                    with st.expander(f"✅ {name}"):
+                    with st.expander(f"[POSIBLE] {name}"):
                         st.markdown(f"**Tablas fuente:** {', '.join(result.source_tables[:3])}")
                         st.markdown(f"**Campos:** {', '.join(result.found_fields)}")
                         st.markdown(f"**Razonamiento:** {result.reasoning}")
@@ -863,7 +938,7 @@ def render_step3():
             for name in report.partial_analyses:
                 result = next((r for r in report.feasibility_matrix if r.analysis_name == name), None)
                 if result:
-                    with st.expander(f"⚠️ {name}"):
+                    with st.expander(f"[PARCIAL] {name}"):
                         st.markdown(f"**Razonamiento:** {result.reasoning}")
                         if result.missing_fields:
                             st.markdown(f"**Faltan:** {', '.join(result.missing_fields)}")
@@ -871,7 +946,7 @@ def render_step3():
                             for r in result.partial_reasons:
                                 st.markdown(f"- {r}")
                         if result.proxy_available:
-                            st.success(f"💡 Proxy disponible: {result.proxy_description}")
+                            st.success(f"Proxy disponible: {result.proxy_description}")
                         if result.suggestions:
                             st.markdown("**Sugerencias:**")
                             for s in result.suggestions:
@@ -884,7 +959,7 @@ def render_step3():
             for name in report.impossible_analyses:
                 result = next((r for r in report.feasibility_matrix if r.analysis_name == name), None)
                 if result:
-                    with st.expander(f"❌ {name}"):
+                    with st.expander(f"[NO VIABLE] {name}"):
                         st.markdown(f"**Motivo:** {result.reasoning}")
                         if result.missing_fields:
                             st.markdown(f"**Datos faltantes:** {', '.join(result.missing_fields)}")
@@ -899,7 +974,7 @@ def render_step3():
 
     # Supuestos sugeridos
     if report.suggested_assumptions:
-        st.markdown("### 💡 Supuestos sugeridos")
+        st.markdown("### Supuestos sugeridos")
         for s in report.suggested_assumptions:
             st.info(f"- {s}")
 
@@ -907,7 +982,7 @@ def render_step3():
 
     # Advertencias globales
     if report.warnings:
-        st.markdown("### ⚠️ Advertencias globales")
+        st.markdown("### Advertencias globales")
         for w in report.warnings:
             st.warning(w)
 
@@ -917,7 +992,7 @@ def render_step3():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        if st.button("⚡ Generar prompt para MCP", type="primary", use_container_width=True):
+        if st.button("Generar prompt para MCP", type="primary", use_container_width=True):
             with st.spinner("Generando prompt personalizado..."):
                 prompt = generate_mcp_prompt(report, st.session_state.project_name, _get_prompt_options())
                 # Enriquecer prompt con observaciones de Claude (insights por tabla)
@@ -940,7 +1015,7 @@ def render_step3():
     with col2:
         diagnostic_txt = export_diagnostic_txt(report, st.session_state.project_name)
         st.download_button(
-            "📥 Descargar diagnóstico (.txt)",
+            "Descargar diagnóstico (.txt)",
             data=diagnostic_txt.encode("utf-8"),
             file_name=f"diagnostico_{_safe_filename(st.session_state.project_name)}.txt",
             mime="text/plain",
@@ -950,7 +1025,7 @@ def render_step3():
     with col3:
         profile_json = export_technical_profile_json(report, st.session_state.project_name)
         st.download_button(
-            "📥 Descargar perfil técnico (.json)",
+            "Descargar perfil técnico (.json)",
             data=profile_json.encode("utf-8"),
             file_name=f"perfil_tecnico_{_safe_filename(st.session_state.project_name)}.json",
             mime="application/json",
@@ -963,7 +1038,7 @@ def render_step3():
 # ---------------------------------------------------------------------------
 
 def render_step4():
-    st.markdown('<div class="step-header">🤖 Paso 4 — Prompt para Claude + Power BI MCP</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-header">04 — Prompt para Claude + Power BI MCP</div>', unsafe_allow_html=True)
 
     prompt = st.session_state.generated_prompt
     report = st.session_state.diagnostic_report
@@ -977,11 +1052,11 @@ def render_step4():
         col1, col2, col3 = st.columns(3)
         col1.metric("✅ Posibles", len(report.possible_analyses))
         col2.metric("⚠️ Parciales", len(report.partial_analyses))
-        col3.metric("❌ No posibles", len(report.impossible_analyses))
+        col3.metric("No posibles", len(report.impossible_analyses))
 
     st.divider()
 
-    st.markdown("### 📋 Prompt generado para Claude + Power BI MCP")
+    st.markdown("### Prompt generado para Claude + Power BI MCP")
     st.markdown("""
     Este prompt está listo para copiar y pegar directamente en **Claude conectado a Power BI mediante MCP**.
     Incluye toda la información del diagnóstico, mapeo de columnas, análisis posibles y tareas concretas.
@@ -1008,7 +1083,7 @@ def render_step4():
 
     with col1:
         st.download_button(
-            "📥 Descargar prompt (.txt)",
+            "Descargar prompt (.txt)",
             data=prompt.encode("utf-8"),
             file_name=f"prompt_mcp_{_safe_filename(st.session_state.project_name)}.txt",
             mime="text/plain",
@@ -1020,7 +1095,7 @@ def render_step4():
         if report:
             diagnostic_txt = export_diagnostic_txt(report, st.session_state.project_name)
             st.download_button(
-                "📥 Descargar diagnóstico (.txt)",
+                "Descargar diagnóstico (.txt)",
                 data=diagnostic_txt.encode("utf-8"),
                 file_name=f"diagnostico_{_safe_filename(st.session_state.project_name)}.txt",
                 mime="text/plain",
@@ -1031,7 +1106,7 @@ def render_step4():
         if report:
             profile_json = export_technical_profile_json(report, st.session_state.project_name)
             st.download_button(
-                "📥 Descargar perfil técnico (.json)",
+                "Descargar perfil técnico (.json)",
                 data=profile_json.encode("utf-8"),
                 file_name=f"perfil_tecnico_{_safe_filename(st.session_state.project_name)}.json",
                 mime="application/json",
@@ -1041,7 +1116,7 @@ def render_step4():
     st.divider()
 
     # Instrucciones de uso
-    st.markdown("### 📌 Cómo usar el prompt")
+    st.markdown("### Cómo usar el prompt")
     st.markdown("""
     1. **Abrí Claude** en tu computadora o en el navegador.
     2. **Asegurate de que Power BI esté abierto** con el archivo .pbix correspondiente.
@@ -1053,14 +1128,14 @@ def render_step4():
     """)
 
     st.info(
-        "💡 **Tip:** Si el prompt incluye observaciones de Claude (sección O), "
+        "**Nota:** Si el prompt incluye observaciones de Claude (sección O), "
         "esas observaciones fueron generadas al analizar una muestra real de tus datos "
         "y le dan contexto adicional a Claude para el modelado."
     )
 
     # Botón para volver y regenerar
     st.divider()
-    if st.button("🔄 Volver al Paso 3 y regenerar", use_container_width=False):
+    if st.button("Volver al Paso 3 y regenerar", use_container_width=False):
         st.session_state.step = 3
         st.rerun()
 
