@@ -1,0 +1,18 @@
+# ============================================================
+# Diagnóstico Logístico → Power BI MCP
+# requirements.txt
+# ============================================================
+
+# Core
+streamlit>=1.32.0
+pandas>=2.1.0
+numpy>=1.26.0
+openpyxl>=3.1.2        # Excel .xlsx
+xlrd>=2.0.1            # Excel .xls (legacy)
+chardet>=5.2.0          # Detección de encoding en CSV
+
+# Anthropic Claude API
+anthropic>=0.25.0
+
+# Utilidades
+python-dotenv>=1.0.0   # Carga de .env para API key
