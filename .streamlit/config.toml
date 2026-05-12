@@ -1,0 +1,16 @@
+[theme]
+# Colores CLC — negro + cyan
+primaryColor        = "#00C8D7"
+backgroundColor     = "#0f1923"
+secondaryBackgroundColor = "#1a2535"
+textColor           = "#e8edf2"
+font                = "sans serif"
+
+[server]
+headless            = true
+enableCORS          = false
+enableXsrfProtection = true
+maxUploadSize       = 200
+
+[browser]
+gatherUsageStats    = false
