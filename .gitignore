@@ -1,0 +1,57 @@
+# ── Entornos virtuales ──
+venv/
+env/
+.venv/
+.env/
+
+# ── Variables de entorno (contiene API keys) ──
+.env
+.env.local
+.env.*.local
+
+# ── Streamlit secrets locales ──
+.streamlit/secrets.toml
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Jupyter / IPython ──
+.ipynb_checkpoints/
+
+# ── Archivos de datos de prueba (no subir al repo) ──
+*.xlsx
+*.xls
+*.csv
+data/
+sample_data/
+test_data/
+
+# ── Editores / IDEs ──
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──
+*.log
+logs/
+
+# ── Outputs temporales ──
+outputs/
+tmp/
+temp/
